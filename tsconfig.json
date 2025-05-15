@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "es2019",
+    "module": "es2020",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "outDir": "public",
+    "strict": true,
+    "noEmitOnError": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+  },
+  "include": ["src/**/*"]
+}

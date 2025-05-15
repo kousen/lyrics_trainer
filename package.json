@@ -1,0 +1,16 @@
+{
+  "name": "lyrics_trainer",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "serve": "npm run build && npx serve public -l 5173"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.5.3",
+    "serve": "^14.2.0"
+  },
+  "private": true
+}

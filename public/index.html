@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Lyrics Trainer – “This Is the Moment”</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="manifest" href="manifest.json" />
+</head>
+<body>
+<h1>Lyrics Trainer</h1>
+
+<div id="lyrics-box" aria-live="polite"></div>
+<div id="counter" aria-hidden="true"></div>
+
+<!-- jump slider -->
+<input type="range" id="seek"
+       aria-label="Seek lyric line"
+       role="slider" aria-valuemin="1" aria-valuemax="1" aria-valuenow="1" />
+
+<!-- auto‑advance controls -->
+<section class="auto">
+    <label for="delayRange">
+        Auto‑advance every <span id="delayLabel">3</span> s
+    </label>
+    <input type="range" id="delayRange" min="0.5" max="10" step="0.5" value="3"
+           aria-label="Auto‑advance delay (seconds)" />
+    <button id="playPauseBtn" aria-pressed="false">Play ▶️</button>
+</section>
+
+<!-- manual nav buttons -->
+<section class="nav">
+    <button id="prevBtn" aria-label="Previous line">Previous</button>
+    <button id="nextBtn" aria-label="Next line">Next</button>
+</section>
+
+<script src="script.js" type="module"></script>
+<script>
+    /* PWA install / offline */
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js');
+    }
+</script>
+</body>
+</html>
