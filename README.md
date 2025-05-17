@@ -1,0 +1,128 @@
+# Lyrics Trainer
+
+A feature-rich offline-capable Progressive Web App that steps you through the lines of "This Is the Moment" one line at a time, with manual and automatic navigation, keyboard support, persistent state, and mobile-friendly interface.
+
+## Features
+
+- **Display lyrics one line at a time** with enhanced visibility
+- **Manual navigation** (Next, Previous, Seek slider, Keyboard shortcuts)
+- **Mobile-friendly** with swipe gestures and responsive design
+- **Theme support** with manual dark/light toggle and system preference detection
+- **Auto-advance** with configurable delay (0.5-10 seconds)
+- **Persistent state** via `localStorage` (remembers position and settings)
+- **Offline support** via service worker (full PWA capabilities)
+- **Error handling** with user-friendly messages
+- **Touch-optimized** interface with proper touch targets
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (>=14)
+- npm
+
+### Installation
+
+```bash
+npm install
+```
+
+### Build
+
+Compile the TypeScript sources to the `public/` directory:
+
+```bash
+npm run build
+```
+
+### Development
+
+Rebuild on changes:
+
+```bash
+npm run watch
+```
+
+### Serve
+
+Serve the compiled app locally on http://localhost:5173:
+
+```bash
+npm run serve
+```
+
+### Mobile Access
+
+To access on mobile devices on the same network:
+1. Find your computer's IP address
+2. Navigate to `http://[YOUR-IP]:5173` on your mobile device
+
+## Usage
+
+### Desktop
+- **Navigate**: Use Previous/Next buttons, arrow keys, or the seek slider
+- **Play/Pause**: Press spacebar or click the Play button
+- **Theme**: Click the moon/sun icon to toggle dark/light mode
+- **Keyboard shortcuts**:
+  - `←` Previous line
+  - `→` Next line
+  - `Space` Play/Pause
+  - `Home` First line
+  - `End` Last line
+
+### Mobile
+- **Swipe gestures**: Swipe left/right on the lyrics to navigate
+- **Touch-friendly**: All buttons are optimized for touch
+- **Theme**: Tap the moon/sun icon to switch themes
+
+## Project Structure
+
+```
+.
+├── public/                    # Compiled assets & static files
+│   ├── index.html
+│   ├── style.css
+│   ├── script.js
+│   ├── lyrics.json
+│   ├── manifest.json
+│   ├── service-worker.js
+│   ├── icon-192.png          # PWA icon
+│   └── icon-512.png          # PWA icon
+├── src/                       # TypeScript source files
+│   └── script.ts
+├── suggested_improvements.md  # Roadmap & future enhancements
+├── package.json
+├── tsconfig.json
+└── README.md
+```
+
+## PWA / Offline Support
+
+The app is a full Progressive Web App with:
+- Service worker for offline functionality
+- App manifest for installation
+- Icons for home screen
+- Network-first caching strategy for lyrics
+
+## Recent Improvements
+
+- ✅ Added loading states and error handling
+- ✅ Implemented manual theme toggle
+- ✅ Enhanced mobile experience with swipe gestures
+- ✅ Improved lyrics visibility
+- ✅ Fixed localStorage handling
+- ✅ Added responsive design
+- ✅ Created PWA icons
+
+## Suggested Improvements
+
+See [suggested_improvements.md](suggested_improvements.md) for ideas on future enhancements, including:
+- Multiple song support
+- Lyrics search functionality
+- Animation transitions
+- Progress indicators
+- And more...
+
+## License
+
+This project is private and not published to npm.
