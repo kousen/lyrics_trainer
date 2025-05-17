@@ -41,7 +41,12 @@ h1{margin:0;text-align:center}
     background:rgba(0,0,0,0.05);border-radius:0.5rem;margin:1rem 0
 }
 .status-message.error{background:rgba(255,0,0,0.1);color:#d32f2f}
-#lyrics-box{font-size:2rem;text-align:center;min-height:3rem}
+#lyrics-box{
+    font-size:2.5rem;text-align:center;min-height:3rem;
+    color:var(--accent);font-weight:600;padding:1rem;
+    background:rgba(0,0,0,0.03);border-radius:0.5rem;
+    cursor:grab;user-select:none;touch-action:pan-y
+}
 #counter{font-size:.9rem;opacity:.7}
 input[type=range]{
     accent-color:var(--accent);width:18rem;height:24px;
@@ -67,7 +72,7 @@ section.auto,section.nav{display:flex;gap:1rem;align-items:center;flex-wrap:wrap
 @media (max-width: 768px) {
     body{padding:1rem}
     h1{font-size:1.5rem}
-    #lyrics-box{font-size:1.75rem;padding:1rem}
+    #lyrics-box{font-size:2rem;padding:1.5rem;margin:1rem 0}
     input[type=range]{width:100%;max-width:18rem}
     section.auto,section.nav{justify-content:center}
     button{width:100%;max-width:200px}
