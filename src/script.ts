@@ -16,12 +16,14 @@ const els = {
     delayLabel: document.getElementById('delayLabel')  as HTMLSpanElement,
     loading:    document.getElementById('loading')     as HTMLDivElement,
     error:      document.getElementById('error')       as HTMLDivElement,
-    content:    document.getElementById('content')     as HTMLDivElement
+    content:    document.getElementById('content')     as HTMLDivElement,
+    themeToggle:document.getElementById('themeToggle') as HTMLButtonElement
 };
 
 let lyrics: string[] = [];
 let timer: number | null = null;
 const STORAGE_KEY = 'lyricsTrainerState';
+const THEME_KEY = 'lyricsTrainerTheme';
 
 // Touch tracking for swipe gestures
 let touchStartX = 0;
@@ -35,7 +37,48 @@ function loadState(): TrainerState {
 }
 function saveState(s: TrainerState){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
 
+/* ---------- theme management ---------- */
+function loadTheme(){
+    const theme = localStorage.getItem(THEME_KEY);
+    if (theme === 'dark') {
+        document.body.classList.add('dark-theme');
+        els.themeToggle.textContent = '☀️';
+    } else if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        els.themeToggle.textContent = '🌙';
+    } else {
+        // Auto theme - check system preference
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            els.themeToggle.textContent = '☀️';
+        } else {
+            els.themeToggle.textContent = '🌙';
+        }
+    }
+}
+
+function toggleTheme(){
+    const body = document.body;
+    const isDark = body.classList.contains('dark-theme') || 
+                   (!body.classList.contains('light-theme') && 
+                    window.matchMedia('(prefers-color-scheme: dark)').matches);
+    
+    if (isDark) {
+        body.classList.remove('dark-theme');
+        body.classList.add('light-theme');
+        els.themeToggle.textContent = '🌙';
+        localStorage.setItem(THEME_KEY, 'light');
+    } else {
+        body.classList.remove('light-theme');
+        body.classList.add('dark-theme');
+        els.themeToggle.textContent = '☀️';
+        localStorage.setItem(THEME_KEY, 'dark');
+    }
+}
+
 /* ---------- bootstrap ---------- */
+// Initialize theme before anything else
+loadTheme();
+
 // Append a cache‑buster query string to avoid 304/empty-body responses
 (async function init(){
     try {
@@ -107,6 +150,7 @@ function toggleTimer(){ timer ? stopTimer() : startTimer(); }
 
 /* ---------- event wiring ---------- */
 function setupUI(){
+    els.themeToggle.onclick = toggleTheme;
     els.prev.onclick = () => { if(state.idx>0){ state.idx--; render(); } };
     els.next.onclick = advance;
     els.seek.oninput = e => { state.idx = Number((e.target as HTMLInputElement).value); render(); };

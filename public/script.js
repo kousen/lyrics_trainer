@@ -11,11 +11,13 @@ const els = {
     delayLabel: document.getElementById('delayLabel'),
     loading: document.getElementById('loading'),
     error: document.getElementById('error'),
-    content: document.getElementById('content')
+    content: document.getElementById('content'),
+    themeToggle: document.getElementById('themeToggle')
 };
 let lyrics = [];
 let timer = null;
 const STORAGE_KEY = 'lyricsTrainerState';
+const THEME_KEY = 'lyricsTrainerTheme';
 // Touch tracking for swipe gestures
 let touchStartX = 0;
 let touchEndX = 0;
@@ -30,7 +32,48 @@ function loadState() {
     }
 }
 function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+/* ---------- theme management ---------- */
+function loadTheme() {
+    const theme = localStorage.getItem(THEME_KEY);
+    if (theme === 'dark') {
+        document.body.classList.add('dark-theme');
+        els.themeToggle.textContent = '☀️';
+    }
+    else if (theme === 'light') {
+        document.body.classList.add('light-theme');
+        els.themeToggle.textContent = '🌙';
+    }
+    else {
+        // Auto theme - check system preference
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            els.themeToggle.textContent = '☀️';
+        }
+        else {
+            els.themeToggle.textContent = '🌙';
+        }
+    }
+}
+function toggleTheme() {
+    const body = document.body;
+    const isDark = body.classList.contains('dark-theme') ||
+        (!body.classList.contains('light-theme') &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+    if (isDark) {
+        body.classList.remove('dark-theme');
+        body.classList.add('light-theme');
+        els.themeToggle.textContent = '🌙';
+        localStorage.setItem(THEME_KEY, 'light');
+    }
+    else {
+        body.classList.remove('light-theme');
+        body.classList.add('dark-theme');
+        els.themeToggle.textContent = '☀️';
+        localStorage.setItem(THEME_KEY, 'dark');
+    }
+}
 /* ---------- bootstrap ---------- */
+// Initialize theme before anything else
+loadTheme();
 // Append a cache‑buster query string to avoid 304/empty-body responses
 (async function init() {
     try {
@@ -100,6 +143,7 @@ function stopTimer() {
 function toggleTimer() { timer ? stopTimer() : startTimer(); }
 /* ---------- event wiring ---------- */
 function setupUI() {
+    els.themeToggle.onclick = toggleTheme;
     els.prev.onclick = () => { if (state.idx > 0) {
         state.idx--;
         render();
