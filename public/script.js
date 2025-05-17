@@ -1,0 +1,134 @@
+"use strict";
+const state = { idx: 0, delay: 3000 };
+const els = {
+    box: document.getElementById('lyrics-box'),
+    counter: document.getElementById('counter'),
+    seek: document.getElementById('seek'),
+    prev: document.getElementById('prevBtn'),
+    next: document.getElementById('nextBtn'),
+    playPause: document.getElementById('playPauseBtn'),
+    delayRange: document.getElementById('delayRange'),
+    delayLabel: document.getElementById('delayLabel'),
+    loading: document.getElementById('loading'),
+    error: document.getElementById('error'),
+    content: document.getElementById('content')
+};
+let lyrics = [];
+let timer = null;
+const STORAGE_KEY = 'lyricsTrainerState';
+/* ---------- load / persist ---------- */
+function loadState() {
+    try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY));
+    }
+    catch {
+        return { idx: 0, delay: 3000 };
+    }
+}
+function saveState(s) { localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+/* ---------- bootstrap ---------- */
+// Append a cache‑buster query string to avoid 304/empty-body responses
+(async function init() {
+    try {
+        const res = await fetch(`lyrics.json?v=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) {
+            throw new Error(`Failed to load lyrics (${res.status})`);
+        }
+        lyrics = await res.json();
+        if (!Array.isArray(lyrics) || lyrics.length === 0) {
+            throw new Error('Invalid lyrics format');
+        }
+        const st = loadState();
+        state.idx = Math.min(st.idx, lyrics.length - 1);
+        state.delay = st.delay;
+        // Hide loading, show content
+        els.loading.hidden = true;
+        els.content.hidden = false;
+        setupUI();
+        render();
+    }
+    catch (error) {
+        els.loading.hidden = true;
+        els.error.hidden = false;
+        // Check if offline
+        if (!navigator.onLine) {
+            els.error.textContent = 'No internet connection. Please check your connection and refresh.';
+        }
+        else {
+            els.error.textContent = error instanceof Error
+                ? `Error: ${error.message}`
+                : 'Failed to load lyrics. Please refresh the page.';
+        }
+        console.error('Failed to load lyrics:', error);
+    }
+})();
+/* ---------- helpers ---------- */
+function render() {
+    els.box.textContent = lyrics[state.idx];
+    els.counter.textContent = `Line ${state.idx + 1} / ${lyrics.length}`;
+    els.prev.disabled = state.idx === 0;
+    els.next.textContent = (state.idx === lyrics.length - 1) ? 'Restart' : 'Next';
+    els.seek.max = String(lyrics.length - 1);
+    els.seek.value = String(state.idx);
+    els.seek.setAttribute('aria-valuemax', String(lyrics.length));
+    els.seek.setAttribute('aria-valuenow', String(state.idx + 1));
+    els.delayRange.value = String(state.delay / 1000);
+    els.delayLabel.textContent = String(state.delay / 1000);
+    saveState(state);
+}
+function advance() {
+    state.idx = (state.idx === lyrics.length - 1) ? 0 : state.idx + 1;
+    render();
+}
+function startTimer() {
+    timer = window.setInterval(advance, state.delay);
+    els.playPause.textContent = 'Pause ⏸';
+    els.playPause.setAttribute('aria-pressed', 'true');
+}
+function stopTimer() {
+    if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+    }
+    els.playPause.textContent = 'Play ▶️';
+    els.playPause.setAttribute('aria-pressed', 'false');
+}
+function toggleTimer() { timer ? stopTimer() : startTimer(); }
+/* ---------- event wiring ---------- */
+function setupUI() {
+    els.prev.onclick = () => { if (state.idx > 0) {
+        state.idx--;
+        render();
+    } };
+    els.next.onclick = advance;
+    els.seek.oninput = e => { state.idx = Number(e.target.value); render(); };
+    els.playPause.onclick = toggleTimer;
+    els.delayRange.oninput = e => {
+        state.delay = Number(e.target.value) * 1000;
+        els.delayLabel.textContent = String(state.delay / 1000);
+        if (timer) {
+            stopTimer();
+            startTimer();
+        }
+    };
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft' && !els.prev.disabled)
+            els.prev.click();
+        else if (e.key === 'ArrowRight')
+            els.next.click();
+        else if (e.key === ' ') {
+            e.preventDefault();
+            toggleTimer();
+        }
+        else if (e.key === 'Home') {
+            state.idx = 0;
+            render();
+        }
+        else if (e.key === 'End') {
+            state.idx = lyrics.length - 1;
+            render();
+        }
+    });
+}
+/* ---------- clean up ---------- */
+window.addEventListener('beforeunload', () => { stopTimer(); saveState(state); });

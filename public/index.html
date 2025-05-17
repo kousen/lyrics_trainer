@@ -10,8 +10,12 @@
 <body>
 <h1>Lyrics Trainer</h1>
 
-<div id="lyrics-box" aria-live="polite"></div>
-<div id="counter" aria-hidden="true"></div>
+<div id="loading" class="status-message">Loading lyrics...</div>
+<div id="error" class="status-message error" hidden></div>
+
+<div id="content" hidden>
+    <div id="lyrics-box" aria-live="polite"></div>
+    <div id="counter" aria-hidden="true"></div>
 
 <!-- jump slider -->
 <input type="range" id="seek"
@@ -28,11 +32,12 @@
     <button id="playPauseBtn" aria-pressed="false">Play ▶️</button>
 </section>
 
-<!-- manual nav buttons -->
-<section class="nav">
-    <button id="prevBtn" aria-label="Previous line">Previous</button>
-    <button id="nextBtn" aria-label="Next line">Next</button>
-</section>
+    <!-- manual nav buttons -->
+    <section class="nav">
+        <button id="prevBtn" aria-label="Previous line">Previous</button>
+        <button id="nextBtn" aria-label="Next line">Next</button>
+    </section>
+</div>
 
 <script src="script.js" type="module"></script>
 <script>

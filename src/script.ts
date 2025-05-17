@@ -13,7 +13,10 @@ const els = {
     next:       document.getElementById('nextBtn')     as HTMLButtonElement,
     playPause:  document.getElementById('playPauseBtn')as HTMLButtonElement,
     delayRange: document.getElementById('delayRange')  as HTMLInputElement,
-    delayLabel: document.getElementById('delayLabel')  as HTMLSpanElement
+    delayLabel: document.getElementById('delayLabel')  as HTMLSpanElement,
+    loading:    document.getElementById('loading')     as HTMLDivElement,
+    error:      document.getElementById('error')       as HTMLDivElement,
+    content:    document.getElementById('content')     as HTMLDivElement
 };
 
 let lyrics: string[] = [];
@@ -30,16 +33,41 @@ function saveState(s: TrainerState){ localStorage.setItem(STORAGE_KEY, JSON.stri
 /* ---------- bootstrap ---------- */
 // Append a cache‑buster query string to avoid 304/empty-body responses
 (async function init(){
-    const res = await fetch(`lyrics.json?v=${Date.now()}`, { cache: 'no-store' });
-    if (!res.ok) {
-        throw new Error(`Failed to load lyrics (${res.status})`);
+    try {
+        const res = await fetch(`lyrics.json?v=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) {
+            throw new Error(`Failed to load lyrics (${res.status})`);
+        }
+        lyrics = await res.json();
+        
+        if (!Array.isArray(lyrics) || lyrics.length === 0) {
+            throw new Error('Invalid lyrics format');
+        }
+        
+        const st = loadState();
+        state.idx   = Math.min(st.idx, lyrics.length-1);
+        state.delay = st.delay;
+        
+        // Hide loading, show content
+        els.loading.hidden = true;
+        els.content.hidden = false;
+        
+        setupUI();
+        render();
+    } catch (error) {
+        els.loading.hidden = true;
+        els.error.hidden = false;
+        
+        // Check if offline
+        if (!navigator.onLine) {
+            els.error.textContent = 'No internet connection. Please check your connection and refresh.';
+        } else {
+            els.error.textContent = error instanceof Error 
+                ? `Error: ${error.message}` 
+                : 'Failed to load lyrics. Please refresh the page.';
+        }
+        console.error('Failed to load lyrics:', error);
     }
-    lyrics = await res.json();
-    const st = loadState();
-    state.idx   = Math.min(st.idx, lyrics.length-1);
-    state.delay = st.delay;
-    setupUI();
-    render();
 })();
 
 /* ---------- helpers ---------- */

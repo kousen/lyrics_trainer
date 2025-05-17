@@ -13,6 +13,11 @@ body{
     background:var(--bg);color:var(--fg);padding:2rem;
 }
 h1{margin:0;text-align:center}
+.status-message{
+    font-size:1.2rem;text-align:center;padding:2rem;
+    background:rgba(0,0,0,0.05);border-radius:0.5rem;margin:1rem 0
+}
+.status-message.error{background:rgba(255,0,0,0.1);color:#d32f2f}
 #lyrics-box{font-size:2rem;text-align:center;min-height:3rem}
 #counter{font-size:.9rem;opacity:.7}
 input[type=range]{accent-color:var(--accent);width:18rem}
