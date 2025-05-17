@@ -1,18 +1,20 @@
 # Lyrics Trainer
 
-A feature-rich offline-capable Progressive Web App that steps you through the lines of "This Is the Moment" one line at a time, with manual and automatic navigation, keyboard support, persistent state, and mobile-friendly interface.
+A feature-rich offline-capable Progressive Web App that steps you through song lyrics one line at a time. Includes "This Is the Moment" by default, with support for uploading custom lyrics from text files. Features manual and automatic navigation, keyboard support, persistent state, and mobile-friendly interface.
 
 ## Features
 
 - **Display lyrics one line at a time** with enhanced visibility
+- **Upload custom lyrics** from text files (.txt format)
 - **Manual navigation** (Next, Previous, Seek slider, Keyboard shortcuts)
 - **Mobile-friendly** with swipe gestures and responsive design
 - **Theme support** with manual dark/light toggle and system preference detection
 - **Auto-advance** with configurable delay (0.5-10 seconds)
-- **Persistent state** via `localStorage` (remembers position and settings)
+- **Persistent state** via `localStorage` (remembers position, settings, and custom lyrics)
 - **Offline support** via service worker (full PWA capabilities)
 - **Error handling** with user-friendly messages
 - **Touch-optimized** interface with proper touch targets
+- **Stable layout** that doesn't jump with varying text lengths
 
 ## Getting Started
 
@@ -75,6 +77,12 @@ To access on mobile devices on the same network:
 - **Touch-friendly**: All buttons are optimized for touch
 - **Theme**: Tap the moon/sun icon to switch themes
 
+### Custom Lyrics
+- **Upload**: Click "Upload Lyrics (.txt)" and select a text file
+- **Format**: One line per row in the text file
+- **Reset**: Click "Reset to Default" to return to the original lyrics
+- **Persistence**: Custom lyrics are saved and restored on page reload
+
 ## Project Structure
 
 ```
@@ -113,6 +121,8 @@ The app is a full Progressive Web App with:
 - ✅ Fixed localStorage handling
 - ✅ Added responsive design
 - ✅ Created PWA icons
+- ✅ Added custom lyrics upload from text files
+- ✅ Fixed layout jumping with stable dimensions
 
 ## Suggested Improvements
 

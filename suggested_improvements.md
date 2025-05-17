@@ -20,6 +20,11 @@
 
 ### Visual Improvements
 1. ✅ **Enhanced Lyrics Display**: Larger font, accent color, and subtle background for better visibility.
+2. ✅ **Stable Layout**: Fixed dimensions prevent jumping when lyrics wrap to multiple lines.
+
+### File Support
+1. ✅ **Upload Custom Lyrics**: Support for uploading .txt files with custom lyrics.
+2. ✅ **Persistent Custom Lyrics**: Custom lyrics saved to localStorage and restored on reload.
 
 ## Remaining Improvements
 
@@ -39,12 +44,14 @@
 3. **Optimize Service Worker Cache Strategy**: Fine-tune caching policies.
 
 ### Additional Features
-1. **Add Multiple Song Support**: Allow users to select from different songs.
-2. **Implement Lyrics Search**: Add ability to search within lyrics.
-3. **Add Bookmark Feature**: Allow users to bookmark specific lines.
-4. **Implement Share Functionality**: Let users share specific lyrics.
-5. **Add Text Size Controls**: Allow users to adjust text size for better readability.
-6. **Add Play Speed Control**: Adjust auto-advance speed during playback.
+1. **Implement Lyrics Search**: Add ability to search within lyrics.
+2. **Add Bookmark Feature**: Allow users to bookmark specific lines.
+3. **Implement Share Functionality**: Let users share specific lyrics.
+4. **Add Text Size Controls**: Allow users to adjust text size for better readability.
+5. **Add Play Speed Control**: Adjust auto-advance speed during playback.
+6. **Support More File Formats**: Add support for .lrc (timed lyrics), .srt (subtitles), or structured formats.
+7. **Lyrics Library**: Save multiple uploaded songs for quick switching.
+8. **Export Feature**: Export current lyrics to share with others.
 
 ### Code Improvements
 1. **Implement Unit Tests**: Add tests for core functionality.
