@@ -20,10 +20,32 @@ h1{margin:0;text-align:center}
 .status-message.error{background:rgba(255,0,0,0.1);color:#d32f2f}
 #lyrics-box{font-size:2rem;text-align:center;min-height:3rem}
 #counter{font-size:.9rem;opacity:.7}
-input[type=range]{accent-color:var(--accent);width:18rem}
+input[type=range]{
+    accent-color:var(--accent);width:18rem;height:24px;
+    touch-action:manipulation;-webkit-appearance:none;appearance:none
+}
+input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:24px;height:24px;
+    background:var(--accent);border-radius:50%;cursor:pointer
+}
+input[type=range]::-moz-range-thumb{
+    width:24px;height:24px;background:var(--accent);
+    border-radius:50%;cursor:pointer;border:none
+}
 button{
-    padding:.5rem 1.5rem;font-size:1rem;border:0;border-radius:.5rem;
-    background:var(--accent);color:#fff;cursor:pointer
+    padding:1rem 2rem;font-size:1.1rem;border:0;border-radius:.5rem;
+    background:var(--accent);color:#fff;cursor:pointer;
+    min-height:48px;touch-action:manipulation
 }
 button:disabled{background:#888;cursor:default}
-section.auto,section.nav{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}
+section.auto,section.nav{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    body{padding:1rem}
+    h1{font-size:1.5rem}
+    #lyrics-box{font-size:1.75rem;padding:1rem}
+    input[type=range]{width:100%;max-width:18rem}
+    section.auto,section.nav{justify-content:center}
+    button{width:100%;max-width:200px}
+}

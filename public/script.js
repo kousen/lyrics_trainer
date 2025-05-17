@@ -16,6 +16,10 @@ const els = {
 let lyrics = [];
 let timer = null;
 const STORAGE_KEY = 'lyricsTrainerState';
+// Touch tracking for swipe gestures
+let touchStartX = 0;
+let touchEndX = 0;
+const MIN_SWIPE_DISTANCE = 50;
 /* ---------- load / persist ---------- */
 function loadState() {
     try {
@@ -130,5 +134,31 @@ function setupUI() {
         }
     });
 }
+/* ---------- clean up ---------- */
+/* ---------- touch gestures ---------- */
+function handleTouchStart(e) {
+    touchStartX = e.changedTouches[0].screenX;
+}
+function handleTouchEnd(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    handleSwipe();
+}
+function handleSwipe() {
+    const distance = touchEndX - touchStartX;
+    if (Math.abs(distance) < MIN_SWIPE_DISTANCE)
+        return;
+    if (distance > 0 && state.idx > 0) {
+        // Swipe right - previous
+        state.idx--;
+        render();
+    }
+    else if (distance < 0) {
+        // Swipe left - next
+        advance();
+    }
+}
+// Setup touch listeners
+els.box.addEventListener('touchstart', handleTouchStart);
+els.box.addEventListener('touchend', handleTouchEnd);
 /* ---------- clean up ---------- */
 window.addEventListener('beforeunload', () => { stopTimer(); saveState(state); });
