@@ -133,6 +133,17 @@ See [suggested_improvements.md](suggested_improvements.md) for ideas on future e
 - Progress indicators
 - And more...
 
+## Deployment
+
+This app can be deployed to any static hosting service:
+
+- **GitHub Pages**: Push to a `gh-pages` branch or configure in repository settings
+- **Netlify**: Connect your GitHub repo and deploy the `public` directory
+- **Vercel**: Import your GitHub repository
+- **Any web server**: Upload the contents of the `public` directory
+
+The app is completely static after building and requires no backend services.
+
 ## License
 
-This project is private and not published to npm.
+MIT License - see [LICENSE](LICENSE) file for details.
