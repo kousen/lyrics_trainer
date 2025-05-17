@@ -13,6 +13,13 @@
     <button id="themeToggle" aria-label="Toggle theme" title="Toggle theme">🌙</button>
 </header>
 
+<div id="lyrics-source" class="lyrics-source">
+    <button id="uploadBtn" class="secondary-btn">Upload Lyrics (.txt)</button>
+    <input type="file" id="fileInput" accept=".txt" hidden>
+    <button id="resetBtn" class="secondary-btn" hidden>Reset to Default</button>
+    <span id="currentSource" class="source-label">Default Lyrics</span>
+</div>
+
 <div id="loading" class="status-message">Loading lyrics...</div>
 <div id="error" class="status-message error" hidden></div>
 

@@ -17,13 +17,19 @@ const els = {
     loading:    document.getElementById('loading')     as HTMLDivElement,
     error:      document.getElementById('error')       as HTMLDivElement,
     content:    document.getElementById('content')     as HTMLDivElement,
-    themeToggle:document.getElementById('themeToggle') as HTMLButtonElement
+    themeToggle:document.getElementById('themeToggle') as HTMLButtonElement,
+    uploadBtn:  document.getElementById('uploadBtn')   as HTMLButtonElement,
+    resetBtn:   document.getElementById('resetBtn')    as HTMLButtonElement,
+    fileInput:  document.getElementById('fileInput')   as HTMLInputElement,
+    currentSource: document.getElementById('currentSource') as HTMLSpanElement
 };
 
 let lyrics: string[] = [];
 let timer: number | null = null;
 const STORAGE_KEY = 'lyricsTrainerState';
 const THEME_KEY = 'lyricsTrainerTheme';
+const CUSTOM_LYRICS_KEY = 'customLyrics';
+const LYRICS_SOURCE_KEY = 'lyricsSource';
 
 // Touch tracking for swipe gestures
 let touchStartX = 0;
@@ -81,6 +87,85 @@ function toggleTheme(){
     }
 }
 
+/* ---------- file handling ---------- */
+async function loadDefaultLyrics() {
+    const res = await fetch(`lyrics.json?v=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) {
+        throw new Error(`Failed to load lyrics (${res.status})`);
+    }
+    lyrics = await res.json();
+}
+
+async function processLyricsFile(file: File): Promise<string[]> {
+    const text = await file.text();
+    return text
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
+}
+
+function handleFileUpload(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    
+    if (file) {
+        console.log('File selected:', file.name);
+        els.loading.hidden = false;
+        els.loading.textContent = 'Processing lyrics file...';
+        
+        processLyricsFile(file)
+            .then(lines => {
+                console.log('Processed lines:', lines.length);
+                if (lines.length === 0) {
+                    throw new Error('No lyrics found in file');
+                }
+                
+                lyrics = lines;
+                state.idx = 0;
+                
+                // Save to localStorage
+                localStorage.setItem(CUSTOM_LYRICS_KEY, JSON.stringify(lines));
+                localStorage.setItem(LYRICS_SOURCE_KEY, 'custom');
+                
+                // Update UI
+                els.currentSource.textContent = `Custom: ${file.name}`;
+                els.resetBtn.hidden = false;
+                els.loading.hidden = true;
+                els.content.hidden = false;
+                
+                console.log('About to render, current lyrics:', lyrics[0]);
+                render();
+            })
+            .catch(error => {
+                els.loading.hidden = true;
+                els.error.hidden = false;
+                els.error.textContent = error instanceof Error 
+                    ? `Error: ${error.message}` 
+                    : 'Failed to process lyrics file';
+                console.error('Failed to process file:', error);
+            });
+    }
+}
+
+async function resetToDefaultLyrics() {
+    localStorage.removeItem(CUSTOM_LYRICS_KEY);
+    localStorage.removeItem(LYRICS_SOURCE_KEY);
+    
+    try {
+        // Load default lyrics
+        await loadDefaultLyrics();
+        
+        // Reset UI
+        els.currentSource.textContent = 'Default Lyrics';
+        els.resetBtn.hidden = true;
+        state.idx = 0;
+        render();
+    } catch (error) {
+        // If direct loading fails, force reload
+        location.reload();
+    }
+}
+
 /* ---------- bootstrap ---------- */
 // Initialize theme before anything else
 loadTheme();
@@ -88,11 +173,22 @@ loadTheme();
 // Append a cache‑buster query string to avoid 304/empty-body responses
 (async function init(){
     try {
-        const res = await fetch(`lyrics.json?v=${Date.now()}`, { cache: 'no-store' });
-        if (!res.ok) {
-            throw new Error(`Failed to load lyrics (${res.status})`);
+        // Check for custom lyrics first
+        const lyricsSource = localStorage.getItem(LYRICS_SOURCE_KEY);
+        
+        if (lyricsSource === 'custom') {
+            const customLyrics = localStorage.getItem(CUSTOM_LYRICS_KEY);
+            if (customLyrics) {
+                lyrics = JSON.parse(customLyrics);
+                els.currentSource.textContent = 'Custom Lyrics';
+                els.resetBtn.hidden = false;
+            } else {
+                // Fallback to default if custom lyrics are missing
+                await loadDefaultLyrics();
+            }
+        } else {
+            await loadDefaultLyrics();
         }
-        lyrics = await res.json();
         
         if (!Array.isArray(lyrics) || lyrics.length === 0) {
             throw new Error('Invalid lyrics format');
@@ -157,6 +253,9 @@ function toggleTimer(){ timer ? stopTimer() : startTimer(); }
 /* ---------- event wiring ---------- */
 function setupUI(){
     els.themeToggle.onclick = toggleTheme;
+    els.uploadBtn.onclick = () => els.fileInput.click();
+    els.fileInput.onchange = handleFileUpload;
+    els.resetBtn.onclick = resetToDefaultLyrics;
     els.prev.onclick = () => { if(state.idx>0){ state.idx--; render(); } };
     els.next.onclick = advance;
     els.seek.oninput = e => { state.idx = Number((e.target as HTMLInputElement).value); render(); };
