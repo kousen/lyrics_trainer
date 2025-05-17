@@ -25,7 +25,11 @@ const MIN_SWIPE_DISTANCE = 50;
 /* ---------- load / persist ---------- */
 function loadState() {
     try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY));
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved === null) {
+            return { idx: 0, delay: 3000 };
+        }
+        return JSON.parse(saved);
     }
     catch {
         return { idx: 0, delay: 3000 };

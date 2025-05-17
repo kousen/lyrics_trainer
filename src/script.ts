@@ -32,7 +32,13 @@ const MIN_SWIPE_DISTANCE = 50;
 
 /* ---------- load / persist ---------- */
 function loadState(): TrainerState {
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)!) }
+    try { 
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved === null) {
+            return { idx:0, delay:3000 };
+        }
+        return JSON.parse(saved);
+    }
     catch { return { idx:0, delay:3000 } }
 }
 function saveState(s: TrainerState){ localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
