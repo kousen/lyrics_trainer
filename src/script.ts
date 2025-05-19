@@ -194,6 +194,7 @@ loadTheme();
         }
         
         if (!Array.isArray(lyrics) || lyrics.length === 0) {
+            // noinspection ExceptionCaughtLocallyJS
             throw new Error('Invalid lyrics format');
         }
         
