@@ -135,6 +135,9 @@ function handleFileUpload(event: Event) {
                 
                 console.log('About to render, current lyrics:', lyrics[0]);
                 render();
+                
+                // Reset the input value so the same file can be selected again
+                input.value = '';
             })
             .catch(error => {
                 els.loading.hidden = true;
@@ -253,7 +256,11 @@ function toggleTimer(){ timer ? stopTimer() : startTimer(); }
 /* ---------- event wiring ---------- */
 function setupUI(){
     els.themeToggle.onclick = toggleTheme;
-    els.uploadBtn.onclick = () => els.fileInput.click();
+    els.uploadBtn.onclick = () => {
+        // Reset the input value before triggering click to ensure onchange fires
+        els.fileInput.value = '';
+        els.fileInput.click();
+    };
     els.fileInput.onchange = handleFileUpload;
     els.resetBtn.onclick = resetToDefaultLyrics;
     els.prev.onclick = () => { if(state.idx>0){ state.idx--; render(); } };

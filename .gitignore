@@ -11,3 +11,7 @@ yarn-error.log*
 .vscode/*
 .DS_Store
 .idea/
+.claude/
+
+# Generated files
+public/script.js
