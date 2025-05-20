@@ -30,6 +30,8 @@ const STORAGE_KEY = 'lyricsTrainerState';
 const THEME_KEY = 'lyricsTrainerTheme';
 const CUSTOM_LYRICS_KEY = 'customLyrics';
 const LYRICS_SOURCE_KEY = 'lyricsSource';
+const DEFAULT_LYRICS_FILE = 'this_is_the_moment.txt';
+const LAST_LYRICS_FILE_KEY = 'lastLyricsFile';
 
 // Touch tracking for swipe gestures
 let touchStartX = 0;
@@ -89,11 +91,31 @@ function toggleTheme(){
 
 /* ---------- file handling ---------- */
 async function loadDefaultLyrics() {
-    const res = await fetch(`lyrics.json?v=${Date.now()}`, { cache: 'no-store' });
-    if (!res.ok) {
-        throw new Error(`Failed to load lyrics (${res.status})`);
+    try {
+        const lastFile = localStorage.getItem(LAST_LYRICS_FILE_KEY) || DEFAULT_LYRICS_FILE;
+        const res = await fetch(`lyrics/${lastFile}?v=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) {
+            // Fall back to the default file if the last one can't be found
+            const defaultRes = await fetch(`lyrics/${DEFAULT_LYRICS_FILE}?v=${Date.now()}`, { cache: 'no-store' });
+            if (!defaultRes.ok) {
+                throw new Error(`Failed to load lyrics (${defaultRes.status})`);
+            }
+            const text = await defaultRes.text();
+            return processLyricsText(text);
+        }
+        const text = await res.text();
+        return processLyricsText(text);
+    } catch (error) {
+        console.error('Error loading lyrics:', error);
+        throw error;
     }
-    lyrics = await res.json();
+}
+
+function processLyricsText(text: string): string[] {
+    return text
+        .split('\n')
+        .map(line => line.trim())
+        .filter(line => line.length > 0);
 }
 
 async function processLyricsFile(file: File): Promise<string[]> {
@@ -126,6 +148,7 @@ function handleFileUpload(event: Event) {
                 // Save to localStorage
                 localStorage.setItem(CUSTOM_LYRICS_KEY, JSON.stringify(lines));
                 localStorage.setItem(LYRICS_SOURCE_KEY, 'custom');
+                localStorage.setItem(LAST_LYRICS_FILE_KEY, file.name);
                 
                 // Update UI
                 els.currentSource.textContent = `Custom: ${file.name}`;
@@ -153,13 +176,14 @@ function handleFileUpload(event: Event) {
 async function resetToDefaultLyrics() {
     localStorage.removeItem(CUSTOM_LYRICS_KEY);
     localStorage.removeItem(LYRICS_SOURCE_KEY);
+    localStorage.setItem(LAST_LYRICS_FILE_KEY, DEFAULT_LYRICS_FILE);
     
     try {
         // Load default lyrics
-        await loadDefaultLyrics();
+        lyrics = await loadDefaultLyrics();
         
         // Reset UI
-        els.currentSource.textContent = 'Default Lyrics';
+        els.currentSource.textContent = 'Default: This is the Moment';
         els.resetBtn.hidden = true;
         state.idx = 0;
         render();
@@ -183,14 +207,17 @@ loadTheme();
             const customLyrics = localStorage.getItem(CUSTOM_LYRICS_KEY);
             if (customLyrics) {
                 lyrics = JSON.parse(customLyrics);
-                els.currentSource.textContent = 'Custom Lyrics';
+                const lastFile = localStorage.getItem(LAST_LYRICS_FILE_KEY) || 'Custom Lyrics';
+                els.currentSource.textContent = `Custom: ${lastFile}`;
                 els.resetBtn.hidden = false;
             } else {
                 // Fallback to default if custom lyrics are missing
-                await loadDefaultLyrics();
+                lyrics = await loadDefaultLyrics();
+                els.currentSource.textContent = `Default: This is the Moment`;
             }
         } else {
-            await loadDefaultLyrics();
+            lyrics = await loadDefaultLyrics();
+            els.currentSource.textContent = `Default: This is the Moment`;
         }
         
         if (!Array.isArray(lyrics) || lyrics.length === 0) {

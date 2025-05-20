@@ -5,7 +5,7 @@ A feature-rich offline-capable Progressive Web App that steps you through song l
 ## Features
 
 - **Display lyrics one line at a time** with enhanced visibility
-- **Upload custom lyrics** from text files (.txt format)
+- **Upload custom lyrics** from text files (.txt format) to the lyrics folder
 - **Manual navigation** (Next, Previous, Seek slider, Keyboard shortcuts)
 - **Mobile-friendly** with swipe gestures and responsive design
 - **Theme support** with manual dark/light toggle and system preference detection
@@ -80,25 +80,30 @@ To access on mobile devices on the same network:
 ### Custom Lyrics
 - **Upload**: Click "Upload Lyrics (.txt)" and select a text file
 - **Format**: One line per row in the text file
+- **Lyrics Folder**: All lyrics files are stored in the `lyrics` folder
 - **Reset**: Click "Reset to Default" to return to the original lyrics
-- **Persistence**: Custom lyrics are saved and restored on page reload
+- **Persistence**: Last used lyrics file is remembered between sessions
 
 ## Project Structure
 
 ```
 .
-├── public/                    # Compiled assets & static files
+├── lyrics/                     # Lyrics text files
+│   ├── this_is_the_moment.txt  # Default lyrics
+│   └── ...                     # User-added lyrics files
+├── public/                     # Compiled assets & static files
 │   ├── index.html
 │   ├── style.css
 │   ├── script.js
-│   ├── lyrics.json
+│   ├── lyrics/                 # Served lyrics files
+│   │   └── this_is_the_moment.txt  # Default lyrics
 │   ├── manifest.json
 │   ├── service-worker.js
-│   ├── icon-192.png          # PWA icon
-│   └── icon-512.png          # PWA icon
-├── src/                       # TypeScript source files
+│   ├── icon-192.png            # PWA icon
+│   └── icon-512.png            # PWA icon
+├── src/                        # TypeScript source files
 │   └── script.ts
-├── suggested_improvements.md  # Roadmap & future enhancements
+├── suggested_improvements.md   # Roadmap & future enhancements
 ├── package.json
 ├── tsconfig.json
 └── README.md
@@ -122,6 +127,7 @@ The app is a full Progressive Web App with:
 - ✅ Added responsive design
 - ✅ Created PWA icons
 - ✅ Added custom lyrics upload from text files
+- ✅ Created dedicated lyrics folder for better organization
 - ✅ Fixed layout jumping with stable dimensions
 
 ## Suggested Improvements

@@ -25,6 +25,8 @@
 ### File Support
 1. ✅ **Upload Custom Lyrics**: Support for uploading .txt files with custom lyrics.
 2. ✅ **Persistent Custom Lyrics**: Custom lyrics saved to localStorage and restored on reload.
+3. ✅ **Dedicated Lyrics Folder**: Organized lyrics storage in a dedicated folder.
+4. ✅ **Last Used File Memory**: App remembers and loads the last used lyrics file.
 
 ## Remaining Improvements
 
@@ -50,7 +52,7 @@
 4. **Add Text Size Controls**: Allow users to adjust text size for better readability.
 5. **Add Play Speed Control**: Adjust auto-advance speed during playback.
 6. **Support More File Formats**: Add support for .lrc (timed lyrics), .srt (subtitles), or structured formats.
-7. **Lyrics Library**: Save multiple uploaded songs for quick switching.
+7. ~~**Lyrics Library**: Save multiple uploaded songs for quick switching.~~ (✅ Implemented with lyrics folder)
 8. **Export Feature**: Export current lyrics to share with others.
 
 ### Code Improvements
