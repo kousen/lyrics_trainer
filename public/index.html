@@ -6,6 +6,7 @@
     <title>Lyrics Trainer – “This Is the Moment”</title>
     <link rel="icon" type="image/png" href="icon-192.png" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="playlist-styles.css" />
     <link rel="manifest" href="manifest.json" />
 </head>
 <body>
@@ -20,6 +21,8 @@
     <button id="resetBtn" class="secondary-btn" hidden>Reset to Default</button>
     <span id="currentSource" class="source-label">Default Lyrics</span>
 </div>
+
+<div id="playlist-view" class="playlist-view"></div>
 
 <div id="loading" class="status-message">Loading lyrics...</div>
 <div id="error" class="status-message error" hidden></div>
@@ -56,6 +59,19 @@
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('service-worker.js');
     }
+</script>
+<script type="module">
+    // Import and initialize playlist component
+    import { PlaylistComponent } from './playlist-component.js';
+    
+    // Wait for the main script to load first
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            if (window.loadLyricsFromPath) {
+                window.playlistComponent = new PlaylistComponent('playlist-view', window.loadLyricsFromPath);
+            }
+        }, 100);
+    });
 </script>
 </body>
 </html>

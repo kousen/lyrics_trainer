@@ -32,6 +32,7 @@ const CUSTOM_LYRICS_KEY = 'customLyrics';
 const LYRICS_SOURCE_KEY = 'lyricsSource';
 const DEFAULT_LYRICS_FILE = 'this_is_the_moment.txt';
 const LAST_LYRICS_FILE_KEY = 'lastLyricsFile';
+const LYRICS_PATH_KEY = 'lyricsPath';
 
 // Touch tracking for swipe gestures
 let touchStartX = 0;
@@ -92,8 +93,11 @@ function toggleTheme(){
 /* ---------- file handling ---------- */
 async function loadDefaultLyrics() {
     try {
-        const lastFile = localStorage.getItem(LAST_LYRICS_FILE_KEY) || DEFAULT_LYRICS_FILE;
-        const res = await fetch(`lyrics/${lastFile}?v=${Date.now()}`, { cache: 'no-store' });
+        // Use the last path if available, or construct from last filename, or fall back to default
+        const lyricsPath = localStorage.getItem(LYRICS_PATH_KEY) || 
+                         `lyrics/${localStorage.getItem(LAST_LYRICS_FILE_KEY) || DEFAULT_LYRICS_FILE}`;
+        
+        const res = await fetch(`${lyricsPath}?v=${Date.now()}`, { cache: 'no-store' });
         if (!res.ok) {
             // Fall back to the default file if the last one can't be found
             const defaultRes = await fetch(`lyrics/${DEFAULT_LYRICS_FILE}?v=${Date.now()}`, { cache: 'no-store' });
@@ -101,6 +105,11 @@ async function loadDefaultLyrics() {
                 throw new Error(`Failed to load lyrics (${defaultRes.status})`);
             }
             const text = await defaultRes.text();
+            
+            // Reset the path to default
+            localStorage.setItem(LYRICS_PATH_KEY, `lyrics/${DEFAULT_LYRICS_FILE}`);
+            localStorage.setItem(LAST_LYRICS_FILE_KEY, DEFAULT_LYRICS_FILE);
+            
             return processLyricsText(text);
         }
         const text = await res.text();
@@ -150,11 +159,19 @@ function handleFileUpload(event: Event) {
                 localStorage.setItem(LYRICS_SOURCE_KEY, 'custom');
                 localStorage.setItem(LAST_LYRICS_FILE_KEY, file.name);
                 
+                // We don't have a real path for uploaded files, so use a special identifier
+                localStorage.setItem(LYRICS_PATH_KEY, `custom:${file.name}`);
+                
                 // Update UI
                 els.currentSource.textContent = `Custom: ${file.name}`;
                 els.resetBtn.hidden = false;
                 els.loading.hidden = true;
                 els.content.hidden = false;
+                
+                // Update playlist if available
+                if (window.playlistComponent) {
+                    window.playlistComponent.refresh();
+                }
                 
                 console.log('About to render, current lyrics:', lyrics[0]);
                 render();
@@ -177,6 +194,7 @@ async function resetToDefaultLyrics() {
     localStorage.removeItem(CUSTOM_LYRICS_KEY);
     localStorage.removeItem(LYRICS_SOURCE_KEY);
     localStorage.setItem(LAST_LYRICS_FILE_KEY, DEFAULT_LYRICS_FILE);
+    localStorage.setItem(LYRICS_PATH_KEY, `lyrics/${DEFAULT_LYRICS_FILE}`);
     
     try {
         // Load default lyrics
@@ -187,6 +205,12 @@ async function resetToDefaultLyrics() {
         els.resetBtn.hidden = true;
         state.idx = 0;
         render();
+        
+        // Update playlist if available
+        if (window.playlistComponent) {
+            window.playlistComponent.refresh();
+            window.playlistComponent.setActiveFile(`lyrics/${DEFAULT_LYRICS_FILE}`);
+        }
     } catch (error) {
         // If direct loading fails, force reload
         location.reload();
@@ -198,8 +222,81 @@ async function resetToDefaultLyrics() {
 loadTheme();
 
 // Append a cache‑buster query string to avoid 304/empty-body responses
+// Add properties to Window interface to make TypeScript happy
+interface Window {
+    playlistComponent: any;
+    loadLyricsFromPath: Function;
+}
+
+/**
+ * Load lyrics from a specific path
+ * @param filePath - Path to the lyrics file
+ * @param fileName - Name of the file (for display)
+ */
+async function loadLyricsFromPath(filePath: string, fileName: string) {
+    try {
+        els.loading.hidden = false;
+        els.loading.textContent = 'Loading lyrics...';
+        els.content.hidden = true;
+        
+        // Fetch the lyrics file
+        const res = await fetch(`${filePath}?v=${Date.now()}`, { cache: 'no-store' });
+        if (!res.ok) {
+            throw new Error(`Failed to load lyrics (${res.status})`);
+        }
+        
+        const text = await res.text();
+        const processedLyrics = processLyricsText(text);
+        
+        if (processedLyrics.length === 0) {
+            throw new Error('No lyrics found in file');
+        }
+        
+        // Update the lyrics and state
+        lyrics = processedLyrics;
+        state.idx = 0;
+        
+        // Save path information
+        localStorage.setItem(LYRICS_PATH_KEY, filePath);
+        localStorage.setItem(LAST_LYRICS_FILE_KEY, fileName);
+        localStorage.setItem(LYRICS_SOURCE_KEY, 'playlist');
+        
+        // Update UI
+        els.currentSource.textContent = `Playlist: ${fileName.replace(/\.[^/.]+$/, "")}`;
+        els.resetBtn.hidden = false;
+        
+        // Hide loading, show content
+        els.loading.hidden = true;
+        els.content.hidden = false;
+        
+        // Render the lyrics
+        render();
+        
+        // Update playlist active item if available
+        if (window.playlistComponent) {
+            window.playlistComponent.setActiveFile(filePath);
+        }
+        
+        return true;
+    } catch (error) {
+        els.loading.hidden = true;
+        els.error.hidden = false;
+        els.content.hidden = true;
+        
+        els.error.textContent = error instanceof Error 
+            ? `Error: ${error.message}` 
+            : 'Failed to load lyrics file';
+        console.error('Failed to load lyrics:', error);
+        
+        return false;
+    }
+}
+
 (async function init(){
     try {
+        // Make loadLyricsFromPath available globally
+        window.loadLyricsFromPath = loadLyricsFromPath;
+        
         // Check for custom lyrics first
         const lyricsSource = localStorage.getItem(LYRICS_SOURCE_KEY);
         
@@ -235,6 +332,15 @@ loadTheme();
         
         setupUI();
         render();
+        
+        // Initialize the playlist component - we'll do this in a script tag instead
+        // to avoid TypeScript module import issues
+        setTimeout(() => {
+            const currentPath = localStorage.getItem(LYRICS_PATH_KEY);
+            if (currentPath && window.playlistComponent) {
+                window.playlistComponent.setActiveFile(currentPath);
+            }
+        }, 100);
     } catch (error) {
         els.loading.hidden = true;
         els.error.hidden = false;

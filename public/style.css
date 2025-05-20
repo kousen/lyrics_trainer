@@ -2,6 +2,8 @@
     --bg: #f7f7f7;
     --fg: #111;
     --accent: #0069d9;
+    --hover: #0056b3;
+    --border: #ddd;
 }
 
 /* Dark theme class for manual control */
@@ -9,6 +11,8 @@ body.dark-theme {
     --bg: #1e1e1e;
     --fg: #eee;
     --accent: #3794ff;
+    --hover: #4da3ff;
+    --border: #444;
 }
 
 /* Auto dark theme (only when no manual preference is set) */
@@ -17,6 +21,8 @@ body.dark-theme {
         --bg: #1e1e1e;
         --fg: #eee;
         --accent: #3794ff;
+        --hover: #4da3ff;
+        --border: #444;
     }
 }
 *{box-sizing:border-box}

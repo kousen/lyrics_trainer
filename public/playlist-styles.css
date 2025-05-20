@@ -1,0 +1,115 @@
+/* Playlist Component Styles */
+
+.playlist-view {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.playlist-container {
+  width: 100%;
+  background: rgba(0,0,0,0.03);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.playlist-container h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.3rem;
+}
+
+.playlist-files {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  max-height: 300px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: 0.3rem;
+}
+
+.playlist-files li {
+  border-bottom: 1px solid var(--border);
+}
+
+.playlist-files li:last-child {
+  border-bottom: none;
+}
+
+.playlist-file-btn {
+  width: 100%;
+  text-align: left;
+  padding: 0.8rem 1rem;
+  background: transparent;
+  color: var(--fg);
+  border: none;
+  border-radius: 0;
+  font-size: 1rem;
+  min-height: unset;
+  transition: background-color 0.2s;
+}
+
+.playlist-file-btn:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.playlist-file-btn.active {
+  background-color: var(--accent);
+  color: white;
+}
+
+.playlist-upload-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.playlist-upload-btn {
+  padding: 0.5rem 1rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+  min-height: unset;
+}
+
+.playlist-upload-btn:hover {
+  background: var(--hover);
+}
+
+.playlist-error {
+  color: #d32f2f;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Dark theme adjustments */
+body.dark-theme .playlist-container,
+body:not(.dark-theme):not(.light-theme) .playlist-container {
+  background: rgba(255,255,255,0.05);
+}
+
+body.dark-theme .playlist-file-btn:hover,
+body:not(.dark-theme):not(.light-theme) .playlist-file-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .playlist-container {
+    padding: 0.8rem;
+  }
+  
+  .playlist-files {
+    max-height: 250px;
+  }
+  
+  .playlist-file-btn {
+    padding: 0.7rem;
+  }
+}
