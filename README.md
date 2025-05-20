@@ -53,6 +53,34 @@ Serve the compiled app locally on http://localhost:5173:
 npm run serve
 ```
 
+### Testing
+
+Run the test suite:
+
+```bash
+npm test
+```
+
+Run tests in watch mode (for development):
+
+```bash
+npm run test:watch
+```
+
+Run tests with UI dashboard:
+
+```bash
+npm run test:ui
+```
+
+Generate test coverage report:
+
+```bash
+npm run test:coverage
+```
+
+See [TESTING.md](TESTING.md) for more details on the testing approach.
+
 ### Mobile Access
 
 To access on mobile devices on the same network:
@@ -103,7 +131,14 @@ To access on mobile devices on the same network:
 │   └── icon-512.png            # PWA icon
 ├── src/                        # TypeScript source files
 │   └── script.ts
+├── tests/                      # Test files
+│   ├── setup.ts                # Test setup and mocks
+│   ├── utils.test.ts           # Utility function tests
+│   ├── state.test.ts           # State management tests
+│   └── theme.test.ts           # Theme functionality tests
 ├── suggested_improvements.md   # Roadmap & future enhancements
+├── TESTING.md                  # Testing documentation
+├── vitest.config.ts            # Vitest configuration
 ├── package.json
 ├── tsconfig.json
 └── README.md

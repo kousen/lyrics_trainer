@@ -56,7 +56,7 @@
 8. **Export Feature**: Export current lyrics to share with others.
 
 ### Code Improvements
-1. **Implement Unit Tests**: Add tests for core functionality.
+1. ✅ **Implement Unit Tests**: Add tests for core functionality.
 2. **Refactor TypeScript**: Improve type safety and organization.
 3. **Add Documentation**: Improve code comments and add JSDoc.
 4. **Add Build Optimization**: Minify CSS/JS for production.
