@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ main ]
   pull_request:
-    branches: [ master, main ]
+    branches: [ main ]
 
 jobs:
   # Unit tests and build
@@ -148,7 +148,7 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy to GitHub Pages
     needs: [test-unit, test-e2e]
-    if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     
     permissions:
       contents: read
