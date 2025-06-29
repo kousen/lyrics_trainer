@@ -12,8 +12,10 @@ Lyrics Trainer is a Progressive Web App that displays song lyrics one line at a 
 - `/public/` - Compiled assets and static files
 - `/lyrics/` - Lyrics text files (source files)
 - `/public/lyrics/` - Lyrics files accessible to the web app
-- `/tests/` - Test files for Vitest
+- `/tests/` - Unit test files for Vitest
+- `/e2e/` - End-to-end test files for Playwright
 - `/vitest.config.ts` - Vitest configuration
+- `/playwright.config.ts` - Playwright E2E configuration
 
 ## Common Commands
 
@@ -29,27 +31,78 @@ npm run watch
 # Serve the app locally (http://localhost:5173)
 npm run serve
 
-# Run tests
+# Run unit tests
 npm test
 
-# Run tests in watch mode
+# Run unit tests in watch mode
 npm run test:watch
 
-# Run tests with UI
+# Run unit tests with UI
 npm run test:ui
 
 # Generate test coverage
 npm run test:coverage
+
+# Run Playwright E2E tests
+npm run test:e2e
+
+# Run E2E tests with UI mode
+npm run test:e2e:ui
+
+# Debug E2E tests
+npm run test:e2e:debug
+
+# Run E2E tests in headed mode (see browser)
+npm run test:e2e:headed
+
+# Show E2E test report
+npm run test:e2e:report
 ```
 
 ## Testing
 
-Tests are written using Vitest and located in the `/tests` directory. The tests use JSDOM for browser environment simulation and include mocks for:
+### Unit Tests
+Unit tests are written using Vitest and located in the `/tests` directory. The tests use JSDOM for browser environment simulation and include mocks for:
 
 - localStorage
 - fetch
 - DOM elements
 - Event handling
+
+### E2E Integration Tests
+End-to-end tests are written using Playwright and located in the `/e2e` directory. 
+
+**Current Status: 125 tests passing, 20 skipped**
+
+#### Test Structure:
+- `/e2e/fixtures/` - Test data files (test-lyrics.txt, empty.txt)
+- `/e2e/page-objects/` - Page object models for maintainability
+  - `LyricsTrainerPage.ts` - Main app page object
+  - `PlaylistPage.ts` - Playlist component page object
+- `/e2e/basic-functionality.test.ts` - Core features (navigation, theme, persistence)
+- `/e2e/file-handling.test.ts` - File upload, reset, custom lyrics
+- `/e2e/playlist.test.ts` - Playlist visibility, file selection
+- `/e2e/mobile.test.ts` - Mobile viewports, touch interactions
+
+#### Browser Coverage:
+Tests run across 5 configurations:
+- Desktop: Chrome, Firefox, Safari
+- Mobile: Mobile Chrome, Mobile Safari
+
+#### Known Skipped Tests (20 total):
+These tests document features not yet implemented:
+- Alert dialogs for invalid file uploads
+- Active file highlighting in playlist
+- Playlist auto-hide after selection
+- File selection persistence across reloads
+- Swipe gesture support (manual testing recommended)
+
+#### Test Patterns:
+- Use page objects for better maintainability
+- Tests expect "Default: This is the Moment" for default source label
+- Slider is 0-indexed but display is 1-indexed
+- Custom uploads show "Custom:" prefix in source label
+- Counter format: "Line X / Y"
 
 When adding new features, always create corresponding tests.
 
@@ -75,7 +128,32 @@ Refer to `suggested_improvements.md` for planned enhancements and completed task
 
 ## When Modifying Code
 
-- Run tests after changes (`npm test`)
+- Run unit tests after changes (`npm test`)
+- Run E2E tests for major changes (`npm run test:e2e`)
 - Update documentation when adding features
 - Follow TypeScript conventions used in `script.ts`
 - Ensure the app works in both desktop and mobile environments
+- Update corresponding tests when implementing skipped features
+
+## Implementation Notes
+
+### Source Label Behavior:
+- Default lyrics: "Default: This is the Moment"
+- Custom uploads: "Custom: [filename]" or "Custom Upload"
+- Playlist files: "Playlist: [filename]"
+
+### Playlist Component:
+- Created via JavaScript in `public/playlist-component.js`
+- Toggle button ID: `#playlistToggleBtn`
+- Container ID: `#playlist-container`
+- Files list class: `.playlist-files`
+- File buttons class: `.playlist-file-btn`
+- Currently doesn't auto-hide after selection
+- Active file highlighting not implemented
+
+### Test-Specific Considerations:
+- File upload tests use ES modules (need `import.meta.url` for `__dirname`)
+- Swipe gestures are difficult to test reliably in Playwright
+- Mobile behavior may differ from desktop (playlist visibility)
+- Alert dialogs for invalid files not implemented
+- File persistence on reload not fully working

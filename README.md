@@ -55,7 +55,11 @@ npm run serve
 
 ### Testing
 
-Run the test suite:
+The project includes comprehensive testing with both unit tests and end-to-end tests.
+
+#### Unit Tests (Vitest)
+
+Run unit tests:
 
 ```bash
 npm test
@@ -78,6 +82,46 @@ Generate test coverage report:
 ```bash
 npm run test:coverage
 ```
+
+#### End-to-End Tests (Playwright)
+
+Run E2E tests across multiple browsers:
+
+```bash
+npm run test:e2e
+```
+
+Run E2E tests with interactive UI (recommended for debugging):
+
+```bash
+npm run test:e2e:ui
+```
+
+Run E2E tests in headed mode (see browsers):
+
+```bash
+npm run test:e2e:headed
+```
+
+Debug E2E tests step-by-step:
+
+```bash
+npm run test:e2e:debug
+```
+
+View E2E test report:
+
+```bash
+npm run test:e2e:report
+```
+
+The E2E tests cover:
+- ✅ **125 tests passing** across Chrome, Firefox, Safari, and mobile browsers
+- ✅ Core functionality (navigation, play/pause, seek slider)
+- ✅ File handling (upload, reset, persistence)
+- ✅ Theme switching and responsive design
+- ✅ Mobile touch interactions
+- ✅ Playlist/library features
 
 See [TESTING.md](TESTING.md) for more details on the testing approach.
 
@@ -131,14 +175,22 @@ To access on mobile devices on the same network:
 │   └── icon-512.png            # PWA icon
 ├── src/                        # TypeScript source files
 │   └── script.ts
-├── tests/                      # Test files
+├── tests/                      # Unit test files (Vitest)
 │   ├── setup.ts                # Test setup and mocks
 │   ├── utils.test.ts           # Utility function tests
 │   ├── state.test.ts           # State management tests
 │   └── theme.test.ts           # Theme functionality tests
+├── e2e/                        # End-to-end test files (Playwright)
+│   ├── fixtures/               # Test data and files
+│   ├── page-objects/           # Page object models
+│   ├── basic-functionality.test.ts  # Core feature tests
+│   ├── file-handling.test.ts   # File upload/management tests
+│   ├── playlist.test.ts        # Playlist/library tests
+│   └── mobile.test.ts          # Mobile and responsive tests
 ├── suggested_improvements.md   # Roadmap & future enhancements
 ├── TESTING.md                  # Testing documentation
 ├── vitest.config.ts            # Vitest configuration
+├── playwright.config.ts        # Playwright E2E configuration
 ├── package.json
 ├── tsconfig.json
 └── README.md
