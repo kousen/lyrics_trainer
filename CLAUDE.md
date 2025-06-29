@@ -149,7 +149,7 @@ Lyrics files are stored in the `/lyrics` directory with `.txt` format. When you 
 - Mobile-friendly with swipe gestures
 - Auto-advance with configurable delay
 
-## Project Status (December 2024)
+## Project Status (June 2025)
 
 ### ✅ Recently Completed:
 - **Playwright E2E Testing:** 125 tests across 5 browser configurations
