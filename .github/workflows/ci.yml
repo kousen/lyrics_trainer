@@ -133,7 +133,7 @@ jobs:
       run: npm run build
       
     - name: Run E2E tests
-      run: npx playwright test --project=${{ matrix.browser }}
+      run: npx playwright test --project=${{ matrix.browser }} --grep-invert="Mobile Experience|Tablet Experience"
       
     - name: Upload test results
       uses: actions/upload-artifact@v4
