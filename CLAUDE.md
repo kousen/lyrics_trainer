@@ -149,6 +149,25 @@ Lyrics files are stored in the `/lyrics` directory with `.txt` format. When you 
 - Mobile-friendly with swipe gestures
 - Auto-advance with configurable delay
 
+## Project Status (December 2024)
+
+### ✅ Recently Completed:
+- **Playwright E2E Testing:** 125 tests across 5 browser configurations
+- **GitHub Actions CI/CD:** Full pipeline with cross-platform testing
+- **Automatic Deployment:** Live app at https://kousen.github.io/lyrics_trainer
+- **Documentation:** Comprehensive testing and CI/CD docs
+
+### 🎯 Next Development Phase:
+The 20 skipped tests provide a clear roadmap for feature implementation:
+1. **Alert dialogs** for invalid file uploads (easiest start)
+2. **Active file highlighting** in playlist component
+3. **Playlist auto-hide** after file selection
+4. **File selection persistence** across page reloads
+5. **Swipe gesture verification** (may already work)
+
+### 📋 Development Workflow:
+1. Pick a `.skip` test → 2. Implement feature → 3. Un-skip test → 4. Verify CI passes
+
 ## Project Improvements
 
 Refer to `suggested_improvements.md` for planned enhancements and completed tasks.
