@@ -123,6 +123,14 @@ The E2E tests cover:
 - ✅ Mobile touch interactions
 - ✅ Playlist/library features
 
+#### Continuous Integration
+The project includes GitHub Actions workflows for automated testing:
+- **Full CI pipeline** runs on pushes to main branch
+- **Quick PR checks** for faster feedback on pull requests
+- **Cross-platform testing** across Ubuntu, Windows, and macOS
+- **Security audits** and automated dependency updates
+- **Automatic deployment** to GitHub Pages on successful builds
+
 See [TESTING.md](TESTING.md) for more details on the testing approach.
 
 ### Mobile Access
@@ -160,6 +168,11 @@ To access on mobile devices on the same network:
 
 ```
 .
+├── .github/                    # GitHub Actions workflows
+│   └── workflows/              # CI/CD automation
+│       ├── ci.yml              # Main CI pipeline
+│       ├── pr-check.yml        # Quick PR validation
+│       └── security.yml        # Security audits & updates
 ├── lyrics/                     # Lyrics text files
 │   ├── this_is_the_moment.txt  # Default lyrics
 │   └── ...                     # User-added lyrics files

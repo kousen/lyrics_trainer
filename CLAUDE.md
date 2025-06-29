@@ -14,6 +14,7 @@ Lyrics Trainer is a Progressive Web App that displays song lyrics one line at a 
 - `/public/lyrics/` - Lyrics files accessible to the web app
 - `/tests/` - Unit test files for Vitest
 - `/e2e/` - End-to-end test files for Playwright
+- `/.github/workflows/` - GitHub Actions CI/CD workflows
 - `/vitest.config.ts` - Vitest configuration
 - `/playwright.config.ts` - Playwright E2E configuration
 
@@ -105,6 +106,32 @@ These tests document features not yet implemented:
 - Counter format: "Line X / Y"
 
 When adding new features, always create corresponding tests.
+
+## CI/CD Workflows
+
+### GitHub Actions Setup:
+- `ci.yml` - Main CI pipeline for pushes to main
+  - Runs unit tests and E2E tests
+  - Tests across multiple OS (Ubuntu, Windows, macOS)  
+  - Tests multiple browsers (Chrome, Firefox, Safari)
+  - Generates coverage reports
+  - Deploys to GitHub Pages on success
+- `pr-check.yml` - Quick validation for PRs
+  - Runs unit tests and critical E2E tests
+  - Comments on PR with test results
+  - Faster feedback loop for contributors
+- `security.yml` - Security and maintenance
+  - Weekly dependency audits
+  - Automated dependency updates
+  - Creates PRs for security fixes
+
+### CI Best Practices:
+- Unit tests run first (faster feedback)
+- E2E tests only run after unit tests pass
+- Cross-platform testing for browser compatibility
+- Artifacts uploaded for failed tests (screenshots, videos)
+- Coverage reports integrated with Codecov
+- Automatic deployment only on main branch
 
 ## File Structure
 
