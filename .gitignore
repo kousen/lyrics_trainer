@@ -19,3 +19,4 @@ public/script.js
 # Test artifacts
 test-results/
 playwright-report/
+coverage/
